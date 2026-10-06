@@ -1,0 +1,70 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ / Android Studio
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Visual Studio Code
+.vscode/
+
+# Flutter / Dart / Pub
+**/doc/api/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+/build/
+
+# Android Specific
+**/android/.gradle/
+**/android/captures/
+**/android/local.properties
+**/android/**/build/
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+.cxx/
+**/android/.cxx/
+
+# Android Keystores & Passwords (SANGAT PENTING: Jangan upload kunci tanda tangan ke GitHub)
+*.keystore
+*.jks
+key.properties
+signing.properties
+
+# iOS Specific (jika kelak di-build untuk iOS)
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/ephemeral/
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+
+# Windows Specific (Desktop build output)
+windows/flutter/ephemeral/
+
+# Symbolication & Obfuscation
+app.*.symbols
+app.*.map.json
+
+# Environment / Secrets (Penting agar token / Firebase / API key tidak bocor)
+.env
+*.env
+
+# OS Files
+Thumbs.db
+desktop.ini
