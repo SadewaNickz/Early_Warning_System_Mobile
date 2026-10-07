@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/station_model.dart';
 import '../services/ews_data_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/animated_river_water_gauge.dart';
+import '../widgets/bouncing_button.dart';
 
 class StationsScreen extends StatefulWidget {
   const StationsScreen({super.key});
@@ -116,26 +118,35 @@ class _StationsScreenState extends State<StationsScreen> {
                   itemBuilder: (context, idx) {
                     final filterName = _statusFilters[idx];
                     final isSelected = _selectedStatusFilter == filterName;
-                    return GestureDetector(
+                    return BouncingButton(
+                      scaleFactor: 0.90,
                       onTap: () {
                         setState(() {
                           _selectedStatusFilter = filterName;
                         });
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
                         decoration: BoxDecoration(
                           color: isSelected ? AppTheme.brandGreenLight : Colors.white,
                           borderRadius: BorderRadius.circular(6),
                           border: Border.all(
                             color: isSelected ? const Color(0xFFC8E6D9) : AppTheme.border,
+                            width: isSelected ? 1.5 : 1.0,
                           ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.02),
+                              blurRadius: 4,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
                         ),
                         child: Text(
                           filterName,
                           style: TextStyle(
                             fontSize: 11.5,
-                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                             color: isSelected ? AppTheme.brandGreen : AppTheme.textMuted,
                           ),
                         ),
@@ -183,8 +194,8 @@ class _StationsScreenState extends State<StationsScreen> {
   Widget _buildFullStationCard(StationModel station, int originalIndex) {
     final percent = (station.height / station.limit).clamp(0.0, 1.0);
 
-    return InkWell(
-      borderRadius: BorderRadius.circular(10),
+    return BouncingButton(
+      scaleFactor: 0.96,
       onTap: () => _showStationDetailSheet(station, originalIndex),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -478,6 +489,17 @@ class _StationsScreenState extends State<StationsScreen> {
 
               const SizedBox(height: 14),
 
+              // Live Animated River Water Gauge (Simulasi Gelombang Aliran Air)
+              AnimatedRiverWaterGauge(
+                currentHeight: station.height,
+                limit: station.limit,
+                status: station.status,
+                isOnline: station.online,
+                gaugeHeight: 110,
+              ),
+
+              const SizedBox(height: 14),
+
               // Detail telemetri sensor
               Container(
                 padding: const EdgeInsets.all(14),
@@ -517,18 +539,29 @@ class _StationsScreenState extends State<StationsScreen> {
               ),
 
               const SizedBox(height: 18),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.pop(ctx),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.brandGreen,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              BouncingButton(
+                scaleFactor: 0.95,
+                onTap: () => Navigator.pop(ctx),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 13),
+                  decoration: BoxDecoration(
+                    color: AppTheme.brandGreen,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.brandGreen.withOpacity(0.25),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
                   ),
-                  child: const Text('Tutup Pratinjau', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                  child: const Center(
+                    child: Text(
+                      'Tutup Pratinjau',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.white),
+                    ),
+                  ),
                 ),
               ),
             ],

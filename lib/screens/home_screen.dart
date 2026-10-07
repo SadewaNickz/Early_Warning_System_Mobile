@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/station_model.dart';
 import '../services/ews_data_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/animated_river_water_gauge.dart';
+import '../widgets/bouncing_button.dart';
 
 class HomeScreen extends StatefulWidget {
   final Function(int) onNavigateTab;
@@ -90,18 +92,23 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ],
                       ),
-                      TextButton(
-                        onPressed: () => widget.onNavigateTab(1),
-                        style: TextButton.styleFrom(
-                          foregroundColor: AppTheme.brandGreen,
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        ),
-                        child: const Row(
-                          children: [
-                            Text('Semua', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
-                            SizedBox(width: 4),
-                            Icon(Icons.arrow_forward_ios_rounded, size: 11),
-                          ],
+                      BouncingButton(
+                        scaleFactor: 0.90,
+                        onTap: () => widget.onNavigateTab(1),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: AppTheme.brandGreenLight,
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: const Color(0xFFC8E6D9)),
+                          ),
+                          child: const Row(
+                            children: [
+                              Text('Semua', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: AppTheme.brandGreen)),
+                              SizedBox(width: 4),
+                              Icon(Icons.arrow_forward_ios_rounded, size: 10.5, color: AppTheme.brandGreen),
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -205,46 +212,60 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(width: 6),
 
         // Bell button
-        Stack(
-          children: [
-            IconButton(
-              icon: const Icon(Icons.notifications_none_rounded, color: AppTheme.textMuted, size: 22),
-              onPressed: () => _showAlertsDialog(context),
-            ),
-            if (alertCount > 0)
-              Positioned(
-                top: 9,
-                right: 9,
-                child: Container(
-                  width: 7,
-                  height: 7,
-                  decoration: const BoxDecoration(
-                    color: AppTheme.warning,
-                    shape: BoxShape.circle,
+        BouncingButton(
+          scaleFactor: 0.88,
+          onTap: () => _showAlertsDialog(context),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF7FAF8),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppTheme.border),
+                ),
+                child: const Icon(Icons.notifications_none_rounded, color: AppTheme.textMuted, size: 19),
+              ),
+              if (alertCount > 0)
+                Positioned(
+                  top: 5,
+                  right: 5,
+                  child: Container(
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: AppTheme.warning,
+                      shape: BoxShape.circle,
+                    ),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
 
+        const SizedBox(width: 8),
+
         // User Avatar Circle
-        InkWell(
+        BouncingButton(
+          scaleFactor: 0.88,
           onTap: () => widget.onNavigateTab(4),
-          borderRadius: BorderRadius.circular(20),
           child: Container(
-            width: 30,
-            height: 30,
+            width: 34,
+            height: 34,
             margin: const EdgeInsets.only(right: 14),
-            decoration: const BoxDecoration(
-              color: Color(0xFFEDF1E9),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEDF1E9),
               shape: BoxShape.circle,
+              border: Border.all(color: const Color(0xFFD8E4DC)),
             ),
             child: Center(
               child: Text(
                 _dataService.currentUser.initials,
                 style: const TextStyle(
                   color: Color(0xFF647350),
-                  fontSize: 11,
+                  fontSize: 11.5,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -519,21 +540,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   children: ['6 jam', '24 jam'].map((r) {
                     final isSel = _selectedRange == r;
-                    return GestureDetector(
+                    return BouncingButton(
+                      scaleFactor: 0.92,
                       onTap: () {
                         setState(() {
                           _selectedRange = r;
                         });
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         decoration: BoxDecoration(
                           color: isSel ? Colors.white : Colors.transparent,
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(5),
                           boxShadow: isSel
                               ? [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.05),
+                                    color: Colors.black.withOpacity(0.08),
                                     blurRadius: 4,
                                     offset: const Offset(0, 1),
                                   )
@@ -543,9 +565,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Text(
                           r,
                           style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: isSel ? FontWeight.w600 : FontWeight.w500,
-                            color: isSel ? AppTheme.textPrimary : AppTheme.textMuted,
+                            fontSize: 10.5,
+                            fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
+                            color: isSel ? AppTheme.brandGreen : AppTheme.textMuted,
                           ),
                         ),
                       ),
@@ -818,68 +840,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 12),
 
-          // U-shaped river cross section (level-diagram dari web)
-          Container(
-            height: 70,
-            decoration: BoxDecoration(
-              border: Border(
-                left: BorderSide(color: Colors.grey.shade300, width: 4),
-                right: BorderSide(color: Colors.grey.shade300, width: 4),
-                bottom: BorderSide(color: Colors.grey.shade300, width: 4),
-              ),
-              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(4)),
-            ),
-            child: Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                // Dashed line ambang batas
-                Positioned(
-                  top: 6,
-                  left: 4,
-                  right: 4,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Batas Talut', style: TextStyle(fontSize: 8, color: Colors.grey.shade500)),
-                      Text('${station.limit} m', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.grey.shade500)),
-                    ],
-                  ),
-                ),
-                // River water box
-                FractionallySizedBox(
-                  heightFactor: (percent * 0.85).clamp(0.2, 0.95),
-                  widthFactor: 1.0,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: AppTheme.riverWater,
-                      border: Border(
-                        top: BorderSide(color: AppTheme.riverBorder, width: 2),
-                      ),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Row(
-                          children: [
-                            Icon(Icons.waves_rounded, size: 14, color: AppTheme.riverText),
-                            SizedBox(width: 4),
-                            Text('Muka Air', style: TextStyle(fontSize: 9, color: AppTheme.riverText, fontWeight: FontWeight.w500)),
-                          ],
-                        ),
-                        Text(
-                          '${station.height} m',
-                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.riverText),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          const SizedBox(height: 12),
+
+          // Live Animated River Water Gauge (Simulasi Talut & Gelombang Aliran Air)
+          AnimatedRiverWaterGauge(
+            currentHeight: station.height,
+            limit: station.limit,
+            status: station.status,
+            isOnline: station.online,
+            gaugeHeight: 125,
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
 
           // Metrics: Curah Hujan & Status Gateway
           Row(
@@ -935,14 +907,51 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildStationCard(StationModel station) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppTheme.border),
-      ),
+    final originalIndex = _dataService.stations.indexOf(station);
+    return BouncingButton(
+      scaleFactor: 0.96,
+      onTap: () {
+        setState(() {
+          if (originalIndex >= 0) {
+            _selectedStationIndex = originalIndex;
+          }
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.water_rounded, color: Colors.white, size: 18),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Memilih ${station.name} (${station.height} m)',
+                    style: GoogleFonts.dmSans(fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: const Color(0xFF138568),
+            duration: const Duration(milliseconds: 1400),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: AppTheme.border),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.02),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
       child: Row(
         children: [
           // River wave icon in soft square (table-location .river-icon dari web)
@@ -1019,8 +1028,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   void _showAlertsDialog(BuildContext context) {
     final alerts = _dataService.alertStations;

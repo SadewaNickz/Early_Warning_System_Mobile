@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/ews_data_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/bouncing_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -440,50 +441,46 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
               const SizedBox(height: 22),
 
-              // Submit Button with Soft Emerald Gradient
-              Container(
-                width: double.infinity,
-                height: 48,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(9),
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xFF138568),
-                      Color(0xFF0F7057),
+              // Submit Button with Soft Emerald Gradient & Bounce Animation
+              BouncingButton(
+                scaleFactor: 0.96,
+                onTap: _isLoading ? null : _handleLogin,
+                child: Container(
+                  width: double.infinity,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(9),
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFF138568),
+                        Color(0xFF0F7057),
+                      ],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.brandGreen.withOpacity(0.3),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
                     ],
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppTheme.brandGreen.withOpacity(0.3),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _handleLogin,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(9),
-                    ),
-                  ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
-                        )
-                      : Text(
-                          'Masuk',
-                          style: GoogleFonts.manrope(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.2,
+                  child: Center(
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
+                          )
+                        : Text(
+                            'Masuk',
+                            style: GoogleFonts.manrope(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.2,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
+                  ),
                 ),
               ),
 
@@ -524,33 +521,30 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   }
 
   Widget _buildPresetChip(String label, String id, IconData icon) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => _selectPreset(id),
-        borderRadius: BorderRadius.circular(7),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF0F6F2),
-            borderRadius: BorderRadius.circular(7),
-            border: Border.all(color: const Color(0xFFD8E4DC)),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 13, color: AppTheme.brandGreen),
-              const SizedBox(width: 5),
-              Text(
-                label.split('/')[0].trim(),
-                style: GoogleFonts.dmSans(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF1E5B48),
-                ),
+    return BouncingButton(
+      scaleFactor: 0.92,
+      onTap: () => _selectPreset(id),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF0F6F2),
+          borderRadius: BorderRadius.circular(7),
+          border: Border.all(color: const Color(0xFFD8E4DC)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 13, color: AppTheme.brandGreen),
+            const SizedBox(width: 5),
+            Text(
+              label.split('/')[0].trim(),
+              style: GoogleFonts.dmSans(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF1E5B48),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

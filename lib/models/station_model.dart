@@ -27,6 +27,8 @@ class StationModel {
     return 'Aman';
   }
 
+  String get status => computedStatus;
+
   Color get statusColor {
     switch (computedStatus) {
       case 'Bahaya':

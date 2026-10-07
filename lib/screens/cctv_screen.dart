@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/ews_data_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/bouncing_button.dart';
 
 class CctvScreen extends StatelessWidget {
   const CctvScreen({super.key});
@@ -84,13 +85,33 @@ class CctvScreen extends StatelessWidget {
 
             // CCTV Grid
             ...stations.map((station) {
-              return Container(
-                margin: const EdgeInsets.only(bottom: 12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppTheme.border),
-                ),
+              return BouncingButton(
+                scaleFactor: 0.97,
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Membuka stream langsung: ${station.name} (${station.area})'),
+                      duration: const Duration(seconds: 2),
+                      behavior: SnackBarBehavior.floating,
+                      backgroundColor: const Color(0xFF138568),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: AppTheme.border),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.02),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -199,8 +220,9 @@ class CctvScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-              );
-            }),
+              ),
+            );
+          }),
           ],
         ),
       ),

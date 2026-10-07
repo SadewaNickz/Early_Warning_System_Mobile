@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/ews_data_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/bouncing_button.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -147,49 +148,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 ..._dataService.userPresets.map((preset) {
                   final isSelected = preset.id == currentUser.id;
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    decoration: BoxDecoration(
-                      color: isSelected ? AppTheme.brandGreenLight : Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: isSelected ? const Color(0xFFC8E6D9) : AppTheme.border,
-                      ),
-                    ),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-                      leading: Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: isSelected ? AppTheme.brandGreen : const Color(0xFFF0F4F1),
-                          shape: BoxShape.circle,
+                  return BouncingButton(
+                    scaleFactor: 0.96,
+                    onTap: () {
+                      _dataService.switchUser(preset);
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      decoration: BoxDecoration(
+                        color: isSelected ? AppTheme.brandGreenLight : Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: isSelected ? const Color(0xFFC8E6D9) : AppTheme.border,
+                          width: isSelected ? 1.5 : 1.0,
                         ),
-                        child: Center(
-                          child: Text(
-                            preset.initials,
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              color: isSelected ? Colors.white : AppTheme.textMuted,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.02),
+                            blurRadius: 4,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+                        leading: Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: isSelected ? AppTheme.brandGreen : const Color(0xFFF0F4F1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Text(
+                              preset.initials,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: isSelected ? Colors.white : AppTheme.textMuted,
+                              ),
                             ),
                           ),
                         ),
+                        title: Text(
+                          preset.name,
+                          style: GoogleFonts.manrope(fontSize: 12.5, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                        ),
+                        subtitle: Text(
+                          preset.role,
+                          style: const TextStyle(fontSize: 10.5, color: AppTheme.textMuted),
+                        ),
+                        trailing: isSelected
+                            ? const Icon(Icons.check_circle_rounded, color: AppTheme.brandGreen, size: 20)
+                            : null,
                       ),
-                      title: Text(
-                        preset.name,
-                        style: GoogleFonts.manrope(fontSize: 12.5, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
-                      ),
-                      subtitle: Text(
-                        preset.role,
-                        style: const TextStyle(fontSize: 10.5, color: AppTheme.textMuted),
-                      ),
-                      trailing: isSelected
-                          ? const Icon(Icons.check_circle_rounded, color: AppTheme.brandGreen, size: 20)
-                          : null,
-                      onTap: () {
-                        _dataService.switchUser(preset);
-                      },
                     ),
                   );
                 }),
@@ -259,24 +271,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 20),
 
                 // Tombol Logout (matching EWS-WEB)
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      foregroundColor: AppTheme.danger,
-                      backgroundColor: Colors.white,
-                      side: const BorderSide(color: AppTheme.dangerBorder),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                BouncingButton(
+                  scaleFactor: 0.96,
+                  onTap: () {
+                    _showLogoutDialog(context);
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 13),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppTheme.dangerBorder),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppTheme.danger.withOpacity(0.04),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
-                    icon: const Icon(Icons.logout_rounded, size: 18),
-                    label: Text(
-                      'Keluar dari Sistem (Logout)',
-                      style: GoogleFonts.manrope(fontWeight: FontWeight.w700, fontSize: 13),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.logout_rounded, size: 18, color: AppTheme.danger),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Keluar dari Sistem (Logout)',
+                          style: GoogleFonts.manrope(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 13,
+                            color: AppTheme.danger,
+                          ),
+                        ),
+                      ],
                     ),
-                    onPressed: () {
-                      _showLogoutDialog(context);
-                    },
                   ),
                 ),
 
