@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/station_model.dart';
 import '../services/ews_data_service.dart';
 import '../theme/app_theme.dart';
-import '../widgets/animated_river_water_gauge.dart';
 import '../widgets/bouncing_button.dart';
 
 class StationsScreen extends StatefulWidget {
@@ -485,17 +484,6 @@ class _StationsScreenState extends State<StationsScreen> {
                     ),
                   ],
                 ),
-              ),
-
-              const SizedBox(height: 14),
-
-              // Live Animated River Water Gauge (Simulasi Gelombang Aliran Air)
-              AnimatedRiverWaterGauge(
-                currentHeight: station.height,
-                limit: station.limit,
-                status: station.status,
-                isOnline: station.online,
-                gaugeHeight: 110,
               ),
 
               const SizedBox(height: 14),

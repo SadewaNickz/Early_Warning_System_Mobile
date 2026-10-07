@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/station_model.dart';
 import '../services/ews_data_service.dart';
 import '../theme/app_theme.dart';
-import '../widgets/animated_river_water_gauge.dart';
 import '../widgets/bouncing_button.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -840,18 +839,68 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 12),
 
-          const SizedBox(height: 12),
-
-          // Live Animated River Water Gauge (Simulasi Talut & Gelombang Aliran Air)
-          AnimatedRiverWaterGauge(
-            currentHeight: station.height,
-            limit: station.limit,
-            status: station.status,
-            isOnline: station.online,
-            gaugeHeight: 125,
+          // U-shaped river cross section (level-diagram dari web)
+          Container(
+            height: 70,
+            decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(color: Colors.grey.shade300, width: 4),
+                right: BorderSide(color: Colors.grey.shade300, width: 4),
+                bottom: BorderSide(color: Colors.grey.shade300, width: 4),
+              ),
+              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(4)),
+            ),
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                // Dashed line ambang batas
+                Positioned(
+                  top: 6,
+                  left: 4,
+                  right: 4,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Batas Talut', style: TextStyle(fontSize: 8, color: Colors.grey.shade500)),
+                      Text('${station.limit} m', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.grey.shade500)),
+                    ],
+                  ),
+                ),
+                // River water box
+                FractionallySizedBox(
+                  heightFactor: (percent * 0.85).clamp(0.2, 0.95),
+                  widthFactor: 1.0,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: AppTheme.riverWater,
+                      border: Border(
+                        top: BorderSide(color: AppTheme.riverBorder, width: 2),
+                      ),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Row(
+                          children: [
+                            Icon(Icons.waves_rounded, size: 14, color: AppTheme.riverText),
+                            SizedBox(width: 4),
+                            Text('Muka Air', style: TextStyle(fontSize: 9, color: AppTheme.riverText, fontWeight: FontWeight.w500)),
+                          ],
+                        ),
+                        Text(
+                          '${station.height} m',
+                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.riverText),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
 
-          const SizedBox(height: 14),
+          const SizedBox(height: 12),
 
           // Metrics: Curah Hujan & Status Gateway
           Row(
