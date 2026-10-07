@@ -12,4 +12,20 @@ class UserModel {
     required this.agency,
     required this.initials,
   });
+
+  UserModel copyWith({
+    String? id,
+    String? name,
+    String? role,
+    String? agency,
+    String? initials,
+  }) {
+    return UserModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      role: role ?? this.role,
+      agency: agency ?? this.agency,
+      initials: initials ?? this.initials,
+    );
+  }
 }

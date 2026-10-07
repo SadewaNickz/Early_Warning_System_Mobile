@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/stations_screen.dart';
 import 'screens/cctv_screen.dart';
 import 'screens/history_screen.dart';
 import 'screens/profile_screen.dart';
+import 'services/ews_data_service.dart';
 import 'theme/app_theme.dart';
 import 'widgets/animated_bottom_nav_bar.dart';
 
@@ -26,11 +28,21 @@ class EwsApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dataService = EwsDataService();
+
     return MaterialApp(
       title: 'EWS Kota Semarang',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const MainNavigationShell(),
+      home: ListenableBuilder(
+        listenable: dataService,
+        builder: (context, _) {
+          if (!dataService.isAuthenticated) {
+            return const LoginScreen();
+          }
+          return const MainNavigationShell();
+        },
+      ),
     );
   }
 }

@@ -13,6 +13,49 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final EwsDataService _dataService = EwsDataService();
 
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        title: Text(
+          'Konfirmasi Keluar',
+          style: GoogleFonts.manrope(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'Apakah Anda yakin ingin keluar dari sesi sistem EWS?',
+          style: GoogleFonts.dmSans(fontSize: 13.5, color: AppTheme.textMuted),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(
+              'Batal',
+              style: GoogleFonts.dmSans(color: AppTheme.textMuted, fontWeight: FontWeight.w600),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.danger,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+            ),
+            onPressed: () {
+              Navigator.pop(ctx);
+              _dataService.logout();
+            },
+            child: Text(
+              'Keluar',
+              style: GoogleFonts.dmSans(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -212,6 +255,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   );
                 }),
+
+                const SizedBox(height: 20),
+
+                // Tombol Logout (matching EWS-WEB)
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      foregroundColor: AppTheme.danger,
+                      backgroundColor: Colors.white,
+                      side: const BorderSide(color: AppTheme.dangerBorder),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                    icon: const Icon(Icons.logout_rounded, size: 18),
+                    label: Text(
+                      'Keluar dari Sistem (Logout)',
+                      style: GoogleFonts.manrope(fontWeight: FontWeight.w700, fontSize: 13),
+                    ),
+                    onPressed: () {
+                      _showLogoutDialog(context);
+                    },
+                  ),
+                ),
 
                 const SizedBox(height: 24),
 

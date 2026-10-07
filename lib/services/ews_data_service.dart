@@ -35,6 +35,45 @@ class EwsDataService extends ChangeNotifier {
   ];
 
   late UserModel currentUser = userPresets[0];
+  bool _isAuthenticated = false;
+  bool get isAuthenticated => _isAuthenticated;
+
+  String? login(String username, String password) {
+    final u = username.trim();
+    final p = password.trim();
+    if (u.isEmpty || p.isEmpty) {
+      return 'Nama pengguna dan kata sandi wajib diisi.';
+    }
+
+    // Match preset or create user session
+    UserModel matched = userPresets[0];
+    bool found = false;
+    for (final preset in userPresets) {
+      if (preset.id.toLowerCase() == u.toLowerCase() ||
+          preset.name.toLowerCase().contains(u.toLowerCase())) {
+        matched = preset;
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      matched = userPresets[0].copyWith(
+        name: u,
+        initials: u.length >= 2 ? u.substring(0, 2).toUpperCase() : u.toUpperCase(),
+      );
+    }
+
+    currentUser = matched;
+    _isAuthenticated = true;
+    notifyListeners();
+    return null;
+  }
+
+  void logout() {
+    _isAuthenticated = false;
+    notifyListeners();
+  }
 
   // Base Stations (sama persis dengan EWS-WEB)
   final List<StationModel> _stations = [
