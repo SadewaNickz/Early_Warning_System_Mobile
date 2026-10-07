@@ -1,13 +1,29 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
+/// Model representasi data stasiun titik pemantauan sungai EWS.
+/// Menyimpan informasi telemetri radar air, curah hujan, ambang batas talut,
+/// serta status operasional sensor online/offline.
 class StationModel {
+  /// Identifier unik stasiun (misal: 'st-1')
   final String id;
+
+  /// Nama stasiun sungai / jembatan pantau
   final String name;
+
+  /// Wilayah / kecamatan lokasi stasiun
   final String area;
+
+  /// Ketinggian Tinggi Muka Air (TMA) saat ini dalam meter
   final double height;
+
+  /// Intensitas curah hujan per jam dalam milimeter (mm)
   final double rain;
+
+  /// Batas ambang talut sungai dalam meter
   final double limit;
+
+  /// Status koneksi sensor IoT Gateway (true: online, false: terputus)
   final bool online;
 
   const StationModel({
@@ -20,6 +36,7 @@ class StationModel {
     required this.online,
   });
 
+  /// Status terhitung secara otomatis berdasarkan TMA vs Ambang Talut
   String get computedStatus {
     if (!online) return 'Data terputus';
     if (height > limit) return 'Bahaya';
@@ -29,6 +46,7 @@ class StationModel {
 
   String get status => computedStatus;
 
+  /// Warna representasi status untuk badge / teks indikator
   Color get statusColor {
     switch (computedStatus) {
       case 'Bahaya':
@@ -43,6 +61,7 @@ class StationModel {
     }
   }
 
+  /// Warna latar belakang badge status
   Color get statusBackgroundColor {
     switch (computedStatus) {
       case 'Bahaya':
@@ -57,6 +76,7 @@ class StationModel {
     }
   }
 
+  /// Warna garis batas badge status
   Color get statusBorderColor {
     switch (computedStatus) {
       case 'Bahaya':
@@ -71,6 +91,7 @@ class StationModel {
     }
   }
 
+  /// Membuat salinan objek dengan modifikasi nilai tertentu
   StationModel copyWith({
     String? id,
     String? name,
